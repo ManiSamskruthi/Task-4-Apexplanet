@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Listing Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    select {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .product-card img {
+      max-width: 100%;
+      height: 150px;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+
+    .product-card h3 {
+      margin: 10px 0 5px;
+    }
+
+    .product-card p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Product Listing</h1>
+
+  <div class="filters">
+    <select id="categoryFilter">
+      <option value="all">All Categories</option>
+      <option value="electronics">Electronics</option>
+      <option value="fashion">Fashion</option>
+      <option value="home">Home</option>
+    </select>
+
+    <select id="priceFilter">
+      <option value="all">All Prices</option>
+      <option value="0-50">Under $50</option>
+      <option value="50-100">$50 - $100</option>
+      <option value="100-1000">Over $100</option>
+    </select>
+
+    <select id="sortRating">
+      <option value="none">Sort by Rating</option>
+      <option value="asc">Low to High</option>
+      <option value="desc">High to Low</option>
+    </select>
+  </div>
+
+  <div class="products" id="productContainer"></div>
+
+  <script>
+    const products = [
+      {
+        name: "Smartphone",
+        category: "electronics",
+        price: 299,
+        rating: 4.5,
+        image: "Smartphone.jpg"
+      },
+      {
+        name: "Headphones",
+        category: "electronics",
+        price: 49,
+        rating: 4.0,
+        image: "Headphones.jpg"
+      },
+      {
+        name: "T-shirt",
+        category: "fashion",
+        price: 19,
+        rating: 3.9,
+        image: "T-shirt.jpg"
+      },
+      {
+        name: "Sofa",
+        category: "home",
+        price: 399,
+        rating: 4.6,
+        image: "sofa.jpg"
+      },
+      {
+        name: "Lamp",
+        category: "home",
+        price: 35,
+        rating: 4.2,
+        image: "lamp.jpg"
+      },
+      {
+        name: "Jacket",
+        category: "fashion",
+        price: 89,
+        rating: 4.3,
+        image: "jacket.jpg"
+      }
+    ];
+
+    const categoryFilter = document.getElementById('categoryFilter');
+    const priceFilter = document.getElementById('priceFilter');
+    const sortRating = document.getElementById('sortRating');
+    const productContainer = document.getElementById('productContainer');
+
+    function renderProducts(filteredProducts) {
+      productContainer.innerHTML = '';
+      if (filteredProducts.length === 0) {
+        productContainer.innerHTML = '<p>No products found.</p>';
+        return;
+      }
+
+      filteredProducts.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>Category: ${product.category}</p>
+          <p>Price: $${product.price}</p>
+          <p>Rating: ${product.rating} ⭐</p>
+        `;
+        productContainer.appendChild(card);
+      });
+    }
+
+    function filterAndSortProducts() {
+      let filtered = [...products];
+
+      // Filter by category
+      const category = categoryFilter.value;
+      if (category !== 'all') {
+        filtered = filtered.filter(p => p.category === category);
+      }
+
+      // Filter by price
+      const priceRange = priceFilter.value;
+      if (priceRange !== 'all') {
+        const [min, max] = priceRange.split('-').map(Number);
+        filtered = filtered.filter(p => p.price >= min && p.price <= max);
+      }
+
+      // Sort by rating
+      const sort = sortRating.value;
+      if (sort === 'asc') {
+        filtered.sort((a, b) => a.rating - b.rating);
+      } else if (sort === 'desc') {
+        filtered.sort((a, b) => b.rating - a.rating);
+      }
+
+      renderProducts(filtered);
+    }
+
+    categoryFilter.addEventListener('change', filterAndSortProducts);
+    priceFilter.addEventListener('change', filterAndSortProducts);
+    sortRating.addEventListener('change', filterAndSortProducts);
+
+    // Initial load
+    renderProducts(products);
+  </script>
+  <a href="index.html" style="text-decoration: none;">
+    <button style="
+      margin: 20px;
+      padding: 10px 20px;
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    ">← Back to Home</button>
+  </a>
+
+  <h1>Product Listing</h1>
+  <!-- your product filter/sort content -->
+
+</body>
+</html>

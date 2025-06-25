@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dynamic Portfolio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      position: relative;
+      min-height: 100vh;
+      padding-top: 60px; /* space for fixed home button */
+    }
+
+    /* Home Button Styles */
+    .home-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: #2b5876;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: background 0.3s ease;
+      z-index: 1000;
+      user-select: none;
+    }
+    .home-btn:hover {
+      background: #4e4376;
+      color: #ffd700;
+    }
+
+    header {
+      background: linear-gradient(to right, #2b5876, #4e4376);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+    }
+
+    .highlight {
+      color: #ffd700;
+    }
+
+    .typewriter {
+      display: inline-block;
+      border-right: 2px solid #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typing 4s steps(40, end), blink 0.75s step-end infinite;
+      max-width: 100%;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent }
+    }
+
+    nav ul {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #333;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #ffd700;
+      color: black;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: grid;
+      gap: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .card.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card h2 {
+      color: #2b5876;
+      margin-bottom: 15px;
+    }
+
+    .card form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .card input,
+    .card textarea {
+      margin-top: 5px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .card button {
+      margin-top: 15px;
+      background: #2b5876;
+      color: white;
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .card button:hover {
+      background: #4e4376;
+    }
+
+    footer {
+      background: #2b5876;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Home Button -->
+  <a href="index.html" class="home-btn" title="Back to Home">🏠 Home</a>
+
+  <header>
+    <h1><span class="highlight" id="userName">Your Name</span></h1>
+    <p><span class="typewriter" id="userRole">Your Role</span></p>
+    <nav>
+      <ul>
+        <li><a href="#about">👤 About</a></li>
+        <li><a href="#projects">💻 Projects</a></li>
+        <li><a href="#contact">📧 Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about" class="card">
+      <h2>About Me</h2>
+      <p id="aboutText">...</p>
+    </section>
+
+    <section id="projects" class="card">
+      <h2>Projects</h2>
+      <ul id="projectsList"></ul>
+    </section>
+
+    <section id="contact" class="card">
+      <h2>Contact Me</h2>
+      <form id="contactForm">
+        <label>Name:</label>
+        <input type="text" required placeholder="Your name" />
+        <label>Email:</label>
+        <input type="email" required placeholder="Your email" />
+        <label>Message:</label>
+        <textarea rows="4" required placeholder="Your message"></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+      <p id="formStatus" style="color: green; margin-top: 10px;"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p id="footerText">© 2025 Your Name. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // === 🔧 USER DATA (Edit this section to customize the portfolio) ===
+    const userData = {
+      name: "Chimmani Shreya",
+      role: "Front-End Developer | JavaScript Enthusiast",
+      about: "I'm a passionate front-end developer focused on building responsive, accessible, and modern web apps using HTML, CSS, and JavaScript.",
+      projects: [
+        {
+          title: "Portfolio Website",
+          description: "A clean and responsive site with modern design."
+        },
+        {
+          title: "To-Do App",
+          description: "Save and retrieve notes using Local Storage."
+        },
+        {
+          title: "Product Filter Page",
+          description: "Interactive UI with JS filtering and sorting."
+        }
+      ],
+      footer: "© 2025 Chimmani Shreya. All rights reserved."
+    };
+
+    // === 🧠 Populate page with userData
+    document.getElementById("userName").textContent = userData.name;
+    document.getElementById("userRole").textContent = userData.role;
+    document.getElementById("aboutText").textContent = userData.about;
+    document.getElementById("footerText").textContent = userData.footer;
+
+    const projectsList = document.getElementById("projectsList");
+    userData.projects.forEach(project => {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${project.title}:</strong> ${project.description}`;
+      projectsList.appendChild(li);
+    });
+
+    // === 🪄 Scroll reveal
+    const revealCards = () => {
+      const cards = document.querySelectorAll('.card');
+      const triggerBottom = window.innerHeight * 0.85;
+      cards.forEach(card => {
+        const cardTop = card.getBoundingClientRect().top;
+        if (cardTop < triggerBottom) {
+          card.classList.add('reveal');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', revealCards);
+    window.addEventListener('load', revealCards);
+
+    // === 📧 Contact form handler
+    document.getElementById("contactForm").addEventListener("submit", e => {
+      e.preventDefault();
+      document.getElementById("formStatus").textContent = "✅ Message sent successfully!";
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>s
